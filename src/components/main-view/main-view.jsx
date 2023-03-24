@@ -1,30 +1,22 @@
-import {useState} from "react";
+import {useState, useEffect} from "react";
 import {MovieCard} from "../movie-card/movie-card";
 import {MovieView} from "../movie-view/movie-view";
 
 export const MainView = () => {
-    const [movies, setMovies] = useState([
-        {
-            id: 1,
-            title: "Inception",
-            image: "https://pixabay.com/images/id-3265473/",
-            director: "Christopher Nolan"
-        },
-        {
-            id: 2,
-            title: "The Prestige",
-            image: "https://pixabay.com/images/id-233171/",
-            director: "Christopher Nolan"
-        },
-        {
-            id: 3,
-            title: "Coco",
-            image: "https://images.app.goo.gl/Jx5ymfdFqh7rP6U67",
-            director: "Adrian Molina & Lee Unkrich"
-        },
-        ]);
-
+    const [movies, setMovies] = useState([]);
     const [selectedMovie, setSelectedMovie] = useState(null);
+
+    useEffect(() => {
+        fetch("https://mycinema.herokuapp.com/movies")
+        .then((response) => response.json())
+        .then((data) => {
+            const moviesFromApi = data.map((movie => {
+                const obj = {id: movie._id, title: movie.Title, image: movie.imageUrl, genre: movie.Genre, director: movie.Director}
+                return obj;
+            }));
+            setMovies(moviesFromApi);
+        });
+    },[]);
         
     if (selectedMovie) {
         return (
@@ -50,4 +42,3 @@ export const MainView = () => {
         </div>
       );
     };
-    
