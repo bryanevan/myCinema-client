@@ -10,10 +10,15 @@ export const MainView = () => {
         fetch("https://mycinema.herokuapp.com/movies")
         .then((response) => response.json())
         .then((data) => {
-            const moviesFromApi = data.map((movie => {
-                const obj = {id: movie._id, title: movie.Title, image: movie.imageUrl, genre: movie.Genre, director: movie.Director}
+            const moviesFromApi = data.map((movie) => {
+                const obj = {id: movie._id, 
+                            title: movie.Title, 
+                            image: movie.imageUrl,
+                            director: movie.Director.Name, 
+                            genre: movie.Genre.Name,
+                            description: movie.Description}
                 return obj;
-            }));
+            });
             setMovies(moviesFromApi);
         });
     },[]);
