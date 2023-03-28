@@ -1,53 +1,12 @@
-<<<<<<< Updated upstream
-import {useState, useEffect} from "react";
-import {MovieCard} from "../movie-card/movie-card";
-import {MovieView} from "../movie-view/movie-view";
-=======
 import { useState, useEffect } from "react";
 import { MovieCard } from "../movie-card/movie-card";
 import { MovieView } from "../movie-view/movie-view"; 
 import { LoginView } from "../login-view/login-view";
 import { SignupView } from "../signup-view/signup-view";
->>>>>>> Stashed changes
 
 import {Button, Card, Row, Col, Button} from "react-bootstrap";
 
 export const MainView = () => {
-<<<<<<< Updated upstream
-    const [movies, setMovies] = useState([]);
-    const [selectedMovie, setSelectedMovie] = useState(null);
-
-    useEffect(() => {
-        fetch("https://mycinema.herokuapp.com/movies")
-        .then((response) => response.json())
-        .then((data) => {
-            const moviesFromApi = data.map((movie) => {
-                const obj = {id: movie._id, 
-                            title: movie.Title, 
-                            image: movie.imageUrl,
-                            director: movie.Director.Name, 
-                            genre: movie.Genre.Name,
-                            description: movie.Description}
-                return obj;
-            });
-            setMovies(moviesFromApi);
-        });
-    },[]);
-        
-    if (selectedMovie) {
-        return (
-          <MovieView movie={selectedMovie} onBackClick={() => setSelectedMovie(null)} />
-        );
-      }
-    
-      if (movies.length === 0) {
-        return <div>The list is empty!</div>;
-      }
-    
-      return (
-        <div>
-          {movies.map((movie) => (
-=======
   const storedUser = JSON.parse(localStorage.getItem("user"));
   const storedToken = localStorage.getItem("token");
   const [user, setUser] = useState(storedUser? storedUser : null);
@@ -109,7 +68,6 @@ export const MainView = () => {
         <hr />
         {similarMovies.map((movie) => (
           <Col className='mb-5' key={movie.id} xs={12} sm={6} md={4} lg={3}>
->>>>>>> Stashed changes
             <MovieCard
               key={movie.id}
               movie={movie}
@@ -117,12 +75,6 @@ export const MainView = () => {
                 setSelectedMovie(newSelectedMovie);
               }}
             />
-<<<<<<< Updated upstream
-          ))}
-        </div>
-      );
-    };
-=======
           </Col>
         ))}
       </>
@@ -182,4 +134,3 @@ export const MainView = () => {
     </Row>
   );
 };
->>>>>>> Stashed changes
