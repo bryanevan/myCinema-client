@@ -1,5 +1,4 @@
 import PropTypes from "prop-types";
-import PropTypes from "prop-types";
 import { Button, Col } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { useParams } from "react-router"
@@ -11,14 +10,14 @@ export const MovieView = ({ movies, user, token, updateUser }) => {
     const movie = movies.find(m => m.id === movieId);
     const similarMovies = movies.filter(movie => movie.genre === movie.genre ? true : false)
 
-    const [isFavorite, setIsFavorite] = useState(user.favoriteMovies.includes(movie.id));
+    const [isFavorite, setIsFavorite] = useState(user.favoriteMovieList.includes(movie.id));
 
     useEffect(() => {
-        setIsFavorite(user.favoriteMovies.includes(movie.id));
+        setIsFavorite(user.favoriteMovieList.includes(movie.id));
     }, [movieId])
 
     const addFavorite = () => {
-        fetch(`https://mycinema.herokuapp.com/users/${user.username}/movies/${movieId}`, {
+        fetch(`https://mycinema.herokuapp.com/users/${user.Username}/movies/${movieId}`, {
             method: "POST",
             headers: { Authorization: `Bearer ${token}` }
         })
@@ -43,7 +42,7 @@ export const MovieView = ({ movies, user, token, updateUser }) => {
     }
 
     const removeFavorite = () => {
-        fetch(`https://mycinema.herokuapp.com/users/${user.username}/movies/${movieId}`, {
+        fetch(`https://mycinema.herokuapp.com/users/${user.Username}/movies/${movieId}`, {
             method: "DELETE",
             headers: { Authorization: `Bearer ${token}` }
         })
@@ -71,7 +70,7 @@ export const MovieView = ({ movies, user, token, updateUser }) => {
         <>
             <Col md={12}>
                 <div className="text-light">
-                    <img className="float-start me-3 mb-2" src={movie.image} alt="Movie Cover Image" />
+                    <img className="float-start me-3 mb-2" src={movie.image} alt="Movie Cover Image" height={500}/>
                     <h2>{movie.title}</h2>
                     <p>{movie.description}</p>
                     <h5>Genre: </h5>
@@ -109,5 +108,5 @@ MovieView.propTypes = {
       title: PropTypes.string.isRequired,
       image: PropTypes.string.isRequired,
       description: PropTypes.string.isRequired
-  }).isRequired, 
+  }).isRequired
 };

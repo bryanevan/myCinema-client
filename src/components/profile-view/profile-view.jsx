@@ -9,7 +9,7 @@ export const ProfileView = ({ user, token, movies, onLoggedOut, updateUser }) =>
     const [email, setEmail] = useState("");
     const [birthdate, setBirthdate] = useState("");
 
-    let favoriteMovies = movies.filter(movie => user.favoriteMovies.includes(movie.id));
+    let favoriteMovies = movies.filter(movie => user.favoriteMovieList.includes(movie.id));
     
     const handleSubmit = event => {
         event.preventDefault();
@@ -21,7 +21,7 @@ export const ProfileView = ({ user, token, movies, onLoggedOut, updateUser }) =>
             birthdate
         }
 
-        fetch(`https://mycinema.herokuapp.com/users/${user.username}`, {
+        fetch(`https://mycinema.herokuapp.com/users/${user.Username}`, {
             method: "PUT",
             body: JSON.stringify(data),
             headers: {
@@ -50,7 +50,7 @@ export const ProfileView = ({ user, token, movies, onLoggedOut, updateUser }) =>
 
     const deleteAccount = () => {
         console.log("doin")
-        fetch(`https://mycinema.herokuapp.com/users/${user.username}`, {
+        fetch(`https://mycinema.herokuapp.com/users/${user.Username}`, {
             method: "DELETE",
             headers: { Authorization: `Bearer ${token}` }
         })
@@ -75,9 +75,9 @@ export const ProfileView = ({ user, token, movies, onLoggedOut, updateUser }) =>
                 <Card className="mt-2 mb-3">
                     <Card.Body>
                         <Card.Title >Your info</Card.Title>
-                        <p>Username: {user.username}</p>
-                        <p>Email: {user.email}</p>
-                        <p>Birthdate: {user.birthdate.slice(0, 10)}</p>
+                        <p>Username: {user.Username}</p>
+                        <p>Email: {user.Email}</p>
+                        <p>Birthdate: {user.Birthday}</p>
                     </Card.Body>
                 </Card>
                 <Button variant="danger" onClick={() => {
