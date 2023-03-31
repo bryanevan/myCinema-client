@@ -1,4 +1,5 @@
 import PropTypes from "prop-types";
+import PropTypes from "prop-types";
 import { Button, Col } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { useParams } from "react-router"
@@ -108,5 +109,5 @@ MovieView.propTypes = {
       title: PropTypes.string.isRequired,
       image: PropTypes.string.isRequired,
       description: PropTypes.string.isRequired
-  }).isRequired, onMovieClick: PropTypes.func.isRequired
+  }).isRequired, 
 };
