@@ -2927,7 +2927,7 @@ try {
 var _jsxDevRuntime = require("react/jsx-dev-runtime");
 var _client = require("react-dom/client");
 var _mainView = require("./components/main-view/main-view");
-var _indexScss = require("./index.scss"); // To indicate to bundle it
+var _indexScss = require("./index.scss");
 var _reactBootstrap = require("react-bootstrap");
 // Main component
 const MyCinemaApplication = ()=>{
