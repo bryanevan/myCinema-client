@@ -8,7 +8,6 @@ import { useEffect, useState } from "react";
 export const MovieView = ({ movies, user, token, updateUser }) => {
     const { movieId } = useParams();
     const movie = movies.find(m => m.id === movieId);
-    const similarMovies = movies.filter(movie => movie.genre === movie.genre ? true : false)
 
     const [isFavorite, setIsFavorite] = useState(user.favoriteMovieList.includes(movie.id));
 
@@ -84,14 +83,8 @@ export const MovieView = ({ movies, user, token, updateUser }) => {
                         <Button variant="danger" className="ms-2" onClick={removeFavorite}>Remove from favorites</Button>
                         : <Button variant="success" className="ms-2" onClick={addFavorite}>Add to favorites</Button>
                     }                   
-                    <h3 className="mt-3 mb-3 text-light">Similar movies:</h3>
                 </div>
             </Col> 
-            {similarMovies.map(movie => (
-                <Col className="mb-4" key={movie.id} xl={2} lg={3} md={4} xs={6}>
-                    <MovieCard movie={movie} />
-                </Col>
-            ))}
         </>
     );
 };
