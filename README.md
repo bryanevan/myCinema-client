@@ -1,6 +1,6 @@
 # myCinema-client
  
-myFlix-client
+myCinema-client
 ├── .gitignore
 ├── package.json
 ├── src
