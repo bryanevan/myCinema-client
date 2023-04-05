@@ -98,15 +98,14 @@ export const MovieView = ({ movies, user, token, updateUser }) => {
 
 MovieView.propTypes = {
   movie: PropTypes.shape({
-      
     director: PropTypes.shape({
         Name: PropTypes.string.isRequired,
-      }),
+      }).isRequired,
     genre: PropTypes.shape({
       Name: PropTypes.string.isRequired
-    }),
+    }).isRequired,
       title: PropTypes.string.isRequired,
       image: PropTypes.string.isRequired,
       description: PropTypes.string.isRequired
-  }).isRequired
+  })
 };
