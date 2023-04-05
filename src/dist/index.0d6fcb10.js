@@ -41281,7 +41281,7 @@ exports.default = Tooltip;
 
 },{"classnames":"jocGM","react":"21dqq","./ThemeProvider":"dVixI","./helpers":"gotcT","./getInitialPopperStyles":"c8j3Q","react/jsx-runtime":"6AEwr","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"9xmpe":[function(require,module,exports) {
 /**
- * React Router DOM v6.9.0
+ * React Router DOM v6.10.0
  *
  * Copyright (c) Remix Software Inc.
  *
@@ -41523,11 +41523,10 @@ const _excluded = [
     "relative",
     "preventScrollReset"
 ];
-//#region Routers
-////////////////////////////////////////////////////////////////////////////////
 function createBrowserRouter(routes, opts) {
     return (0, _router.createRouter)({
         basename: opts == null ? void 0 : opts.basename,
+        future: opts == null ? void 0 : opts.future,
         history: (0, _router.createBrowserHistory)({
             window: opts == null ? void 0 : opts.window
         }),
@@ -41539,6 +41538,7 @@ function createBrowserRouter(routes, opts) {
 function createHashRouter(routes, opts) {
     return (0, _router.createRouter)({
         basename: opts == null ? void 0 : opts.basename,
+        future: opts == null ? void 0 : opts.future,
         history: (0, _router.createHashHistory)({
             window: opts == null ? void 0 : opts.window
         }),
@@ -42173,7 +42173,7 @@ let savedScrollPositions = {};
 
 },{"react":"21dqq","react-router":"dbWyW","@remix-run/router":"5ncDG","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"dbWyW":[function(require,module,exports) {
 /**
- * React Router v6.9.0
+ * React Router v6.10.0
  *
  * Copyright (c) Remix Software Inc.
  *
@@ -43252,17 +43252,17 @@ class AwaitErrorBoundary extends _react.Component {
         if (!/*#__PURE__*/ _react.isValidElement(element)) // Ignore non-elements. This allows people to more easily inline
         // conditionals in their route config.
         return;
-        if (element.type === _react.Fragment) {
-            // Transparently support React.Fragment and its children.
-            routes.push.apply(routes, createRoutesFromChildren(element.props.children, parentPath));
-            return;
-        }
-        !(element.type === Route) && (0, _router.UNSAFE_invariant)(false, "[" + (typeof element.type === "string" ? element.type : element.type.name) + "] is not a <Route> component. All component children of <Routes> must be a <Route> or <React.Fragment>");
-        !(!element.props.index || !element.props.children) && (0, _router.UNSAFE_invariant)(false, "An index route cannot have child routes.");
         let treePath = [
             ...parentPath,
             index
         ];
+        if (element.type === _react.Fragment) {
+            // Transparently support React.Fragment and its children.
+            routes.push.apply(routes, createRoutesFromChildren(element.props.children, treePath));
+            return;
+        }
+        !(element.type === Route) && (0, _router.UNSAFE_invariant)(false, "[" + (typeof element.type === "string" ? element.type : element.type.name) + "] is not a <Route> component. All component children of <Routes> must be a <Route> or <React.Fragment>");
+        !(!element.props.index || !element.props.children) && (0, _router.UNSAFE_invariant)(false, "An index route cannot have child routes.");
         let route = {
             id: element.props.id || treePath.join("-"),
             caseSensitive: element.props.caseSensitive,
@@ -43298,6 +43298,7 @@ function detectErrorBoundary(route) {
 function createMemoryRouter(routes, opts) {
     return (0, _router.createRouter)({
         basename: opts == null ? void 0 : opts.basename,
+        future: opts == null ? void 0 : opts.future,
         history: (0, _router.createMemoryHistory)({
             initialEntries: opts == null ? void 0 : opts.initialEntries,
             initialIndex: opts == null ? void 0 : opts.initialIndex
@@ -43310,7 +43311,7 @@ function createMemoryRouter(routes, opts) {
 
 },{"@remix-run/router":"5ncDG","react":"21dqq","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"5ncDG":[function(require,module,exports) {
 /**
- * @remix-run/router v1.4.0
+ * @remix-run/router v1.5.0
  *
  * Copyright (c) Remix Software Inc.
  *
@@ -43342,6 +43343,7 @@ parcelHelpers.export(exports, "defer", ()=>defer);
 parcelHelpers.export(exports, "generatePath", ()=>generatePath);
 parcelHelpers.export(exports, "getStaticContextFromError", ()=>getStaticContextFromError);
 parcelHelpers.export(exports, "getToPathname", ()=>getToPathname);
+parcelHelpers.export(exports, "isDeferredData", ()=>isDeferredData);
 parcelHelpers.export(exports, "isRouteErrorResponse", ()=>isRouteErrorResponse);
 parcelHelpers.export(exports, "joinPaths", ()=>joinPaths);
 parcelHelpers.export(exports, "json", ()=>json);
@@ -44411,7 +44413,10 @@ const defaultDetectErrorBoundary = (route)=>Boolean(route.hasErrorBoundary); //#
     let detectErrorBoundary = init.detectErrorBoundary || defaultDetectErrorBoundary; // Routes keyed by ID
     let manifest = {}; // Routes in tree format for matching
     let dataRoutes = convertRoutesToDataRoutes(init.routes, detectErrorBoundary, undefined, manifest);
-    let inFlightDataRoutes; // Cleanup function for history
+    let inFlightDataRoutes; // Config driven behavior flags
+    let future = _extends({
+        v7_normalizeFormMethod: false
+    }, init.future); // Cleanup function for history
     let unlistenHistory = null; // Externally-provided functions to call on all state changes
     let subscribers = new Set(); // Externally-provided object to hold scroll restoration locations during routing
     let savedScrollPositions = null; // Externally-provided function to get scroll restoration keys
@@ -44532,24 +44537,12 @@ const defaultDetectErrorBoundary = (route)=>Boolean(route.hasErrorBoundary); //#
                 return;
             }
             return startNavigation(historyAction, location);
-        });
-        if (state.initialized) return router;
-        let lazyMatches = state.matches.filter((m)=>m.route.lazy);
-        if (lazyMatches.length === 0) {
-            // Kick off initial data load if needed.  Use Pop to avoid modifying history
-            startNavigation(Action.Pop, state.location);
-            return router;
-        } // Load lazy modules, then kick off initial data load if needed
-        let lazyPromises = lazyMatches.map((m)=>loadLazyRouteModule(m.route, detectErrorBoundary, manifest));
-        Promise.all(lazyPromises).then(()=>{
-            let initialized = !state.matches.some((m)=>m.route.loader) || init.hydrationData != null;
-            if (initialized) // We already have required loaderData so we can just set initialized
-            updateState({
-                initialized: true
-            });
-            else // We still need to kick off initial data loads
-            startNavigation(Action.Pop, state.location);
-        });
+        }); // Kick off initial data load if needed.  Use Pop to avoid modifying history
+        // Note we don't do any handling of lazy here.  For SPA's it'll get handled
+        // in the normal navigation flow.  For SSR it's expected that lazy modules are
+        // resolved prior to router creation since we can't go into a fallbackElement
+        // UI for SSR'd apps
+        if (!state.initialized) startNavigation(Action.Pop, state.location);
         return router;
     } // Clean up a router and it's side effects
     function dispose() {
@@ -44629,7 +44622,7 @@ const defaultDetectErrorBoundary = (route)=>Boolean(route.hasErrorBoundary); //#
             init.history.go(to);
             return;
         }
-        let { path , submission , error  } = normalizeNavigateOptions(to, opts);
+        let { path , submission , error  } = normalizeNavigateOptions(to, future, opts);
         let currentLocation = state.location;
         let nextLocation = createLocation(state.location, path, opts && opts.state); // When using navigate as a PUSH/REPLACE we aren't reading an already-encoded
         // URL from window.location, so we need to encode it here so the behavior
@@ -44775,7 +44768,7 @@ const defaultDetectErrorBoundary = (route)=>Boolean(route.hasErrorBoundary); //#
                 signal: request.signal
             });
         } // Call loaders
-        let { shortCircuited , loaderData , errors  } = await handleLoaders(request, location, matches, loadingNavigation, opts && opts.submission, opts && opts.replace, pendingActionData, pendingError);
+        let { shortCircuited , loaderData , errors  } = await handleLoaders(request, location, matches, loadingNavigation, opts && opts.submission, opts && opts.fetcherSubmission, opts && opts.replace, pendingActionData, pendingError);
         if (shortCircuited) return;
          // Clean up now that the action/loaders have completed.  Don't clean up if
         // we short circuited because pendingNavigationController will have already
@@ -44857,7 +44850,7 @@ const defaultDetectErrorBoundary = (route)=>Boolean(route.hasErrorBoundary); //#
         };
     } // Call all applicable loaders for the given matches, handling redirects,
     // errors, etc.
-    async function handleLoaders(request, location, matches, overrideNavigation, submission, replace, pendingActionData, pendingError) {
+    async function handleLoaders(request, location, matches, overrideNavigation, submission, fetcherSubmission, replace, pendingActionData, pendingError) {
         // Figure out the right navigation we want to use for data loading
         let loadingNavigation = overrideNavigation;
         if (!loadingNavigation) {
@@ -44872,7 +44865,7 @@ const defaultDetectErrorBoundary = (route)=>Boolean(route.hasErrorBoundary); //#
             loadingNavigation = navigation;
         } // If this was a redirect from an action we don't have a "submission" but
         // we have it on the loading navigation so use that if available
-        let activeSubmission = submission ? submission : loadingNavigation.formMethod && loadingNavigation.formAction && loadingNavigation.formData && loadingNavigation.formEncType ? {
+        let activeSubmission = submission || fetcherSubmission ? submission || fetcherSubmission : loadingNavigation.formMethod && loadingNavigation.formAction && loadingNavigation.formData && loadingNavigation.formEncType ? {
             formMethod: loadingNavigation.formMethod,
             formAction: loadingNavigation.formAction,
             formData: loadingNavigation.formData,
@@ -44975,7 +44968,7 @@ const defaultDetectErrorBoundary = (route)=>Boolean(route.hasErrorBoundary); //#
             }));
             return;
         }
-        let { path , submission  } = normalizeNavigateOptions(href, opts, true);
+        let { path , submission  } = normalizeNavigateOptions(href, future, opts, true);
         let match = getTargetMatch(matches, path);
         pendingPreventScrollReset = (opts && opts.preventScrollReset) === true;
         if (submission && isMutationMethod(submission.formMethod)) {
@@ -45037,6 +45030,7 @@ const defaultDetectErrorBoundary = (route)=>Boolean(route.hasErrorBoundary); //#
                 fetchers: new Map(state.fetchers)
             });
             return startRedirectNavigation(state, actionResult, {
+                submission,
                 isFetchActionRedirect: true
             });
         } // Process any non-redirect errors thrown
@@ -45247,6 +45241,21 @@ const defaultDetectErrorBoundary = (route)=>Boolean(route.hasErrorBoundary); //#
             submission: _extends({}, submission, {
                 formAction: redirect.location
             }),
+            // Preserve this flag across redirects
+            preventScrollReset: pendingPreventScrollReset
+        });
+        else if (isFetchActionRedirect) // For a fetch action redirect, we kick off a new loading navigation
+        // without the fetcher submission, but we send it along for shouldRevalidate
+        await startNavigation(redirectHistoryAction, redirectLocation, {
+            overrideNavigation: {
+                state: "loading",
+                location: redirectLocation,
+                formMethod: undefined,
+                formAction: undefined,
+                formEncType: undefined,
+                formData: undefined
+            },
+            fetcherSubmission: submission,
             // Preserve this flag across redirects
             preventScrollReset: pendingPreventScrollReset
         });
@@ -45527,10 +45536,10 @@ function createStaticHandler(routes, opts) {
    */ async function query(request, _temp2) {
         let { requestContext  } = _temp2 === void 0 ? {} : _temp2;
         let url = new URL(request.url);
-        let method = request.method.toLowerCase();
+        let method = request.method;
         let location = createLocation("", createPath(url), null, "default");
         let matches = matchRoutes(dataRoutes, location, basename); // SSR supports HEAD requests while SPA doesn't
-        if (!isValidMethod(method) && method !== "head") {
+        if (!isValidMethod(method) && method !== "HEAD") {
             let error = getInternalRouterError(405, {
                 method
             });
@@ -45601,10 +45610,10 @@ function createStaticHandler(routes, opts) {
    */ async function queryRoute(request, _temp3) {
         let { routeId , requestContext  } = _temp3 === void 0 ? {} : _temp3;
         let url = new URL(request.url);
-        let method = request.method.toLowerCase();
+        let method = request.method;
         let location = createLocation("", createPath(url), null, "default");
         let matches = matchRoutes(dataRoutes, location, basename); // SSR supports HEAD requests while SPA doesn't
-        if (!isValidMethod(method) && method !== "head" && method !== "options") throw getInternalRouterError(405, {
+        if (!isValidMethod(method) && method !== "HEAD" && method !== "OPTIONS") throw getInternalRouterError(405, {
             method
         });
         else if (!matches) throw getInternalRouterError(404, {
@@ -45820,7 +45829,7 @@ function isSubmissionNavigation(opts) {
     return opts != null && "formData" in opts;
 } // Normalize navigation options by converting formMethod=GET formData objects to
 // URLSearchParams so they behave identically to links with query params
-function normalizeNavigateOptions(to, opts, isFetcher) {
+function normalizeNavigateOptions(to, future, opts, isFetcher) {
     if (isFetcher === void 0) isFetcher = false;
     let path = typeof to === "string" ? to : createPath(to); // Return location verbatim on non-submission navigations
     if (!opts || !isSubmissionNavigation(opts)) return {
@@ -45835,8 +45844,9 @@ function normalizeNavigateOptions(to, opts, isFetcher) {
      // Create a Submission on non-GET navigations
     let submission;
     if (opts.formData) {
+        let formMethod = opts.formMethod || "get";
         submission = {
-            formMethod: opts.formMethod || "get",
+            formMethod: future.v7_normalizeFormMethod ? formMethod.toUpperCase() : formMethod.toLowerCase(),
             formAction: stripHashFromPath(path),
             formEncType: opts && opts.formEncType || "application/x-www-form-urlencoded",
             formData: opts.formData
@@ -46136,7 +46146,7 @@ async function callLoaderOrAction(type, request, match, matches, manifest, detec
         type: resultType,
         error: result
     };
-    if (result instanceof DeferredData) {
+    if (isDeferredData(result)) {
         var _result$init, _result$init2;
         return {
             type: ResultType.deferred,
@@ -46158,7 +46168,9 @@ function createClientSideRequest(history, location, signal, submission) {
         signal
     };
     if (submission && isMutationMethod(submission.formMethod)) {
-        let { formMethod , formEncType , formData  } = submission;
+        let { formMethod , formEncType , formData  } = submission; // Didn't think we needed this but it turns out unlike other methods, patch
+        // won't be properly normalized to uppercase and results in a 405 error.
+        // See: https://fetch.spec.whatwg.org/#concept-method
         init.method = formMethod.toUpperCase();
         init.body = formEncType === "application/x-www-form-urlencoded" ? convertFormDataToSearchParams(formData) : formData;
     } // Content-Type is inferred (https://fetch.spec.whatwg.org/#dom-request)
@@ -46344,6 +46356,10 @@ function isErrorResult(result) {
 function isRedirectResult(result) {
     return (result && result.type) === ResultType.redirect;
 }
+function isDeferredData(value) {
+    let deferred = value;
+    return deferred && typeof deferred === "object" && typeof deferred.data === "object" && typeof deferred.subscribe === "function" && typeof deferred.cancel === "function" && typeof deferred.resolveData === "function";
+}
 function isResponse(value) {
     return value != null && typeof value.status === "number" && typeof value.statusText === "string" && typeof value.headers === "object" && typeof value.body !== "undefined";
 }
@@ -46357,10 +46373,10 @@ function isQueryRouteResponse(obj) {
     return obj && isResponse(obj.response) && (obj.type === ResultType.data || ResultType.error);
 }
 function isValidMethod(method) {
-    return validRequestMethods.has(method);
+    return validRequestMethods.has(method.toLowerCase());
 }
 function isMutationMethod(method) {
-    return validMutationMethods.has(method);
+    return validMutationMethods.has(method.toLowerCase());
 }
 async function resolveDeferredResults(currentMatches, matchesToLoad, results, signal, isFetcher, currentLoaderData) {
     for(let index = 0; index < results.length; index++){
