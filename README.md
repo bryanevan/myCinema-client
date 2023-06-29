@@ -47,8 +47,6 @@ The client side user interface complements the REST API and MongoDB database whi
 - [Code URL](https://github.com/bryanevan/myCinema-client)
 - [API URL](https://mycinema.herokuapp.com/)
 
-## Process
-
 ### Technologies Used
 
 - React
