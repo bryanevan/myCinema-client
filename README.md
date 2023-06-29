@@ -5,10 +5,9 @@
 - [Overview](#overview)
 - [How to Run](#how-to-run)
 - [Links](#links)
-- [Process](#process)
-  - [Technologies used](#technologies-used)
-  - [Dependencies](#dependencies)
-  - [API](#api)
+- [Technologies used](#technologies-used)
+- [Dependencies](#dependencies)
+- [API](#api)
 - [Features](#features)
 - [Credits](#credits)
 
@@ -93,5 +92,3 @@ Information about the [API used in this project](https://github.com/bryanevan/my
 - Search Functionality: Users can easily search for movies in the database using the search feature.
 
 - Personalized Top Movies List: MyCinema provides users with the ability to create a personalized top movies list by adding their favorite movies. Users can easily add or remove movies from their top movies list using various methods, such as a toggle button to like or dislike movies.
-
-.
