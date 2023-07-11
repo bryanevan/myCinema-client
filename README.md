@@ -43,8 +43,7 @@ The client side user interface complements the REST API and MongoDB database whi
 ## Links
 
 - [Live site URL](https://my-cinema808.netlify.app/)
-- [Code URL](https://github.com/bryanevan/myCinema-client)
-- [API URL](https://mycinema.herokuapp.com/)
+- [API Code](https://github.com/bryanevan/myCinema-client/)
 
 ### Technologies Used
 
