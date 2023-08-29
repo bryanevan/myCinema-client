@@ -13,9 +13,9 @@
 
 ## Overview
 
-MyCinema is a movie app that allows users to access information about different movies. Users can register, update their persona    l information, and manage a list of their favorite movies.
+MyCinema is a movie app that allows users to access information about different movies. Users can register, update their personal information, and manage a list of their favorite movies.
 
-The client side user interface complements the REST API and MongoDB database which have been [set up previously](https://github.com/bryanevan/myCinema-server-application), providing a seamless experience for users. Built with MongoDB, Express, and Node.js, MyCinema is a full-stack we application which offers a user-friendly, responsive and efficient solution for those seeking movie information and management.
+The client side user interface complements the REST API and MongoDB database which have been [set up previously](https://github.com/bryanevan/myCinema-server-application), providing a seamless experience for users. Built with MongoDB, Express, and Node.js, myCinema is a full-stack web application which offers a user-friendly, responsive and efficient solution for those seeking movie information and management.
 
 ## How to Run
 
